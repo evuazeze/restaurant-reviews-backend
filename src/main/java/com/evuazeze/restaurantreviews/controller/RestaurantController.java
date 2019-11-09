@@ -3,6 +3,8 @@ package com.evuazeze.restaurantreviews.controller;
 import com.evuazeze.restaurantreviews.exception.RestaurantNotFoundException;
 import com.evuazeze.restaurantreviews.model.Restaurant;
 import com.evuazeze.restaurantreviews.service.RestaurantService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,32 +14,35 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/restaurants")
+@RequestMapping("/api/v1")
 public class RestaurantController {
 
     @Autowired
     private RestaurantService restaurantService;
 
-    @GetMapping
+    @GetMapping("/restaurants")
     public List<Restaurant> getAllRestaurants() {
         List<Restaurant> list = restaurantService.listRestaurants();
         return list;
     }
 
-    @GetMapping("/")
+    @GetMapping("/restaurants/")
     public @ResponseBody List<Restaurant> getFavouriteRestaurants(@RequestParam("is_favorite") boolean value) {
         List<Restaurant> favoriteRestaurants = restaurantService.listFavouriteRestaurants(value);
         return favoriteRestaurants;
     }
 
-    @PostMapping
+    @PostMapping("/restaurants")
     @ResponseStatus(HttpStatus.CREATED)
     public void createRestaurant(@RequestBody Restaurant restaurant) {
         restaurantService.saveRestaurant(restaurant);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Restaurant> getRestaurant(@PathVariable("id") Long id) {
+    @GetMapping("/restaurants/{id}")
+    @ApiOperation(value = "Finds Restaurants by id",
+    notes = "Provide an id to look up specific contact from the address book",
+    response = Restaurant.class)
+    public ResponseEntity<Restaurant> getRestaurant(@ApiParam(value = "ID value for the restaurant you need to retrieve", required = true) @PathVariable("id") Long id) {
         try {
             return new ResponseEntity<Restaurant>(restaurantService.findRestaurant(id), HttpStatus.OK);
         } catch (RestaurantNotFoundException exception) {
@@ -45,7 +50,7 @@ public class RestaurantController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/restaurants/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void favoriteARestaurant(@PathVariable("id") Long id, @RequestParam("is_favorite") Boolean value) {
         restaurantService.favoriteARestaurant(id, value);

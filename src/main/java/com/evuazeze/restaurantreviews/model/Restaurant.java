@@ -1,39 +1,51 @@
 package com.evuazeze.restaurantreviews.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "restaurant")
+@ApiModel(description = "Details about the restaurant")
 public class Restaurant extends TimeStamp {
 
     @Id
     @TableGenerator(name="TABLE_GEN", table="SEQUENCE_TABLE", pkColumnName="SEQ_NAME",
             valueColumnName="SEQ_COUNT", pkColumnValue="RES_SEQ")
     @GeneratedValue(strategy=GenerationType.TABLE, generator="TABLE_GEN")
+    @ApiModelProperty(notes = "The unique id of the restaurant")
     private Long id;
 
+    @ApiModelProperty(notes = "The restaurant's name")
     private String name;
+    @ApiModelProperty(notes = "The restaurant's neighborhood")
     private String neighborhood;
+    @ApiModelProperty(notes = "The restaurant's photograph url")
     private String photograph;
+    @ApiModelProperty(notes = "The restaurant's address")
     private String address;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JsonProperty("latlng")
+    @ApiModelProperty(notes = "The restaurant's location")
     private Cordinates cordinates;
 
     @Column(name = "cuisine_type")
     @JsonProperty("cuisine_type")
+    @ApiModelProperty("Cuisine type offered")
     private String cuisineType;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "operating_hours_id")
     @JsonProperty("operating_hours")
+    @ApiModelProperty(notes = "The restaurant's opening hours")
     private OperatingHours operatingHours;
 
     @Column(name = "is_favorite")
     @JsonProperty("is_favorite")
+    @ApiModelProperty(notes = "like/unlike the restaurant")
     private boolean isFavorite;
 
     @PrePersist

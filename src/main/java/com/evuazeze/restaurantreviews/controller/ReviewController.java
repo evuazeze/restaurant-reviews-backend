@@ -12,25 +12,25 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/reviews")
+@RequestMapping("/api/v1")
 public class ReviewController {
 
     @Autowired
     private ReviewService reviewService;
 
-    @PostMapping
+    @PostMapping("/reviews")
     @ResponseStatus(HttpStatus.OK)
     public void createReview(@RequestBody Review review) {
         reviewService.saveReview(review);
     }
 
-    @GetMapping
+    @GetMapping("/reviews")
     public List<Review> getAllReviews() {
         List<Review> list = reviewService.listReviews();
         return list;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/reviews/{id}")
     public ResponseEntity<Review> getReview(@PathVariable("id") Long id) {
         try {
             return new ResponseEntity<Review>(reviewService.findReview(id), HttpStatus.OK);
@@ -39,19 +39,19 @@ public class ReviewController {
         }
     }
 
-    @GetMapping("/")
+    @GetMapping("/reviews/")
     public @ResponseBody List<Review> getRestaurantReviews(@RequestParam("restaurant_id") Long id) {
         List<Review> restaurantReviews = reviewService.listRestaurantReviews(id);
         return restaurantReviews;
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/reviews/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateReview(@PathVariable("id") Long id, @RequestBody Review reviewUpdate) {
         reviewService.updateReview(id, reviewUpdate);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/reviews/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteReview(@PathVariable("id") Long id) {
         reviewService.deleteReview(id);
