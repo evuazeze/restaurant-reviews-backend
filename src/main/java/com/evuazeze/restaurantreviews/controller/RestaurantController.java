@@ -40,7 +40,7 @@ public class RestaurantController {
 
     @GetMapping("/restaurants/{id}")
     @ApiOperation(value = "Finds Restaurants by id",
-    notes = "Provide an id to look up specific contact from the address book",
+    notes = "Provide an id to look up a specific restaurant",
     response = Restaurant.class)
     public ResponseEntity<Restaurant> getRestaurant(@ApiParam(value = "ID value for the restaurant you need to retrieve", required = true) @PathVariable("id") Long id) {
         try {
