@@ -1,0 +1,22 @@
+= Restaurant Reviews API
+
+== Endpoints
+
+=== GET Endpoints
+
+Get all restaurants
+.request
+include::{snippets}/get-restaurants/http-request.adoc[]
+
+.response
+include::{snippets}/get-restaurants/http-response.adoc[]
+
+=== POST Endpoints
+
+.request
+include::{snippets}/post-restaurant/http-request.adoc[]
+
+.response
+include::{snippets}/post-restaurant/http-response.adoc[]
+
+

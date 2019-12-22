@@ -15,7 +15,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     private RestaurantRepository restaurantRepository;
 
     @Override
-    public List<Restaurant> listRestaurants() {
+    public List<Restaurant> findAll() {
         return restaurantRepository.findAll();
     }
 
@@ -25,24 +25,23 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Restaurant findRestaurant(long id) {
+    public Optional<Restaurant> findById(Long id) {
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(id);
 
         if (optionalRestaurant.isPresent())
-            return optionalRestaurant.get();
+            return optionalRestaurant;
         else
             throw new RestaurantNotFoundException("Restaurant Not Found");
     }
 
     @Override
-    public void saveRestaurant(Restaurant restaurant) {
-        restaurantRepository.save(restaurant);
+    public Restaurant save(Restaurant restaurant) {
+        return restaurantRepository.save(restaurant);
     }
 
     @Override
-    public void favoriteARestaurant(Long id, Boolean value) {
-        Restaurant restaurant = findRestaurant(id);
-        restaurant.setIsFavorite(value);
+    public Boolean favoriteARestaurant(Restaurant restaurant) {
         restaurantRepository.saveAndFlush(restaurant);
+        return true;
     }
 }

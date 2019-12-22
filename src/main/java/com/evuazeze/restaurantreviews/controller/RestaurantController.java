@@ -1,58 +1,80 @@
 package com.evuazeze.restaurantreviews.controller;
 
-import com.evuazeze.restaurantreviews.exception.RestaurantNotFoundException;
 import com.evuazeze.restaurantreviews.model.Restaurant;
 import com.evuazeze.restaurantreviews.service.RestaurantService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
 public class RestaurantController {
 
+    private static final Logger logger = LogManager.getLogger(RestaurantController.class);
+
     @Autowired
     private RestaurantService restaurantService;
 
     @GetMapping("/restaurants")
-    public List<Restaurant> getAllRestaurants() {
-        List<Restaurant> list = restaurantService.listRestaurants();
+    public Iterable<Restaurant> getRestaurants() {
+        Iterable<Restaurant> list = restaurantService.findAll();
         return list;
     }
 
     @GetMapping("/restaurants/")
-    public @ResponseBody List<Restaurant> getFavouriteRestaurants(@RequestParam("is_favorite") boolean value) {
+    public @ResponseBody
+    List<Restaurant> getFavouriteRestaurants(@RequestParam("is_favorite") boolean value) {
         List<Restaurant> favoriteRestaurants = restaurantService.listFavouriteRestaurants(value);
         return favoriteRestaurants;
     }
 
     @PostMapping("/restaurants")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createRestaurant(@RequestBody Restaurant restaurant) {
-        restaurantService.saveRestaurant(restaurant);
+    public ResponseEntity<Restaurant> createRestaurant(@RequestBody Restaurant restaurant) {
+        logger.info("Creating new restaurant with name: {}, neighborhood: {}, cuisine type: {}", restaurant.getName(), restaurant.getNeighborhood(), restaurant.getCuisineType());
+
+        Restaurant newRestaurant = restaurantService.save(restaurant);
+
+        System.out.println(newRestaurant);
+
+        return ResponseEntity
+                .created(URI.create("/api/v1/restaurants/" + newRestaurant.getId()))
+                .body(newRestaurant);
     }
 
     @GetMapping("/restaurants/{id}")
-    @ApiOperation(value = "Finds Restaurants by id",
-    notes = "Provide an id to look up a specific restaurant",
-    response = Restaurant.class)
-    public ResponseEntity<Restaurant> getRestaurant(@ApiParam(value = "ID value for the restaurant you need to retrieve", required = true) @PathVariable("id") Long id) {
-        try {
-            return new ResponseEntity<Restaurant>(restaurantService.findRestaurant(id), HttpStatus.OK);
-        } catch (RestaurantNotFoundException exception) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Restaurant Not Found");
-        }
+    public ResponseEntity<Restaurant> getRestaurant(@PathVariable("id") Long id) {
+
+        return restaurantService.findById(id)
+                .map(restaurant -> ResponseEntity
+                        .ok()
+                        .location(URI.create("/api/v1/restaurants/" + restaurant.getId()))
+                        .body(restaurant))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/restaurants/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void favoriteARestaurant(@PathVariable("id") Long id, @RequestParam("is_favorite") Boolean value) {
-        restaurantService.favoriteARestaurant(id, value);
+    public ResponseEntity<?> favoriteARestaurant(@PathVariable("id") Long id,
+                                    @RequestParam("is_favorite") Boolean value) {
+        logger.info("Liking/Unliking restaurant with id: {}", id);
+
+        Optional<Restaurant> existingRestaurant = restaurantService.findById(id);
+
+        return existingRestaurant.map(r -> {
+            r.setIsFavorite(value);
+
+            if (restaurantService.favoriteARestaurant(existingRestaurant.get())) {
+                return ResponseEntity.ok()
+                        .location(URI.create("/restaurants/" + r.getId()))
+                        .body(existingRestaurant.get());
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        }).orElse(ResponseEntity.notFound().build());
     }
 }
