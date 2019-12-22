@@ -18,7 +18,7 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
-    @PostMapping("/reviews")
+    @PostMapping(value = "/reviews", consumes = {"application/x-www-form-urlencoded;charset=UTF-8"})
     @ResponseStatus(HttpStatus.OK)
     public void createReview(@RequestBody Review review) {
         reviewService.saveReview(review);
