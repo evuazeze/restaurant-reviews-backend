@@ -5,6 +5,7 @@ import com.evuazeze.restaurantreviews.model.Review;
 import com.evuazeze.restaurantreviews.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,9 +19,9 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
-    @PostMapping(value = "/reviews", consumes = {"application/x-www-form-urlencoded;charset=UTF-8"})
+    @PostMapping(value = "/reviews", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public void createReview(@RequestBody Review review) {
+    public void createReview(Review review) {
         reviewService.saveReview(review);
     }
 
