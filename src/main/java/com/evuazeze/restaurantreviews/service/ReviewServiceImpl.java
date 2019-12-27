@@ -44,7 +44,7 @@ public class ReviewServiceImpl implements ReviewService {
     public void updateReview(Long id, Review reviewUpdate) {
         Review review = findReview(id);
         review.setRating(reviewUpdate.getRating());
-        review.setComment(reviewUpdate.getComment());
+        review.setComments(reviewUpdate.getComments());
         reviewRepository.saveAndFlush(review);
     }
 

@@ -11,13 +11,13 @@ import java.util.Date;
 @MappedSuperclass
 public class TimeStamp {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
-    @JsonProperty("created_at")
-    @Column(name = "created_at")
+//    @JsonProperty("created_at")
+//    @Column(name = "created_at")
     private Date createdAt = new Date();
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
-    @JsonProperty("updated_at")
-    @Column(name = "updated_at")
+//    @JsonProperty("updated_at")
+//    @Column(name = "updated_at")
     private Date updatedAt = new Date();
 
     public Date getCreatedAt() {

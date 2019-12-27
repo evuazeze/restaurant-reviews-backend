@@ -17,11 +17,12 @@ public class Review extends TimeStamp {
     @ManyToOne
     private Restaurant restaurant;
 
-    @ManyToOne
-    private Author author;
+//    @ManyToOne
+//    private Author author;
 
+    private String name;
     private Integer rating;
-    private String comment;
+    private String comments;
 
     @JsonProperty("restaurant_id")
     private void unpackRestaurantId(Long restaurant_id) {
@@ -29,11 +30,11 @@ public class Review extends TimeStamp {
         restaurant.setId(restaurant_id);
     }
 
-    @JsonProperty("author_id")
-    private void unpackAuthorId(Long author_id) {
-        this.author = new Author();
-        author.setId(author_id);
-    }
+//    @JsonProperty("author_id")
+//    private void unpackAuthorId(Long author_id) {
+//        this.author = new Author();
+//        author.setId(author_id);
+//    }
 
     public Long getId() {
         return id;
@@ -51,12 +52,21 @@ public class Review extends TimeStamp {
         this.restaurant = restaurant;
     }
 
-    public Author getAuthor() {
-        return author;
+//    public Author getAuthor() {
+//        return author;
+//    }
+//
+//    public void setAuthor(Author author) {
+//        this.author = author;
+//    }
+
+
+    public String getName() {
+        return name;
     }
 
-    public void setAuthor(Author author) {
-        this.author = author;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getRating() {
@@ -67,11 +77,11 @@ public class Review extends TimeStamp {
         this.rating = rating;
     }
 
-    public String getComment() {
-        return comment;
+    public String getComments() {
+        return comments;
     }
 
-    public void setComment(String comments) {
-        this.comment = comments;
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 }
