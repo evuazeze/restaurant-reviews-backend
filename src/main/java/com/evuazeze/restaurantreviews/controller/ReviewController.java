@@ -4,8 +4,11 @@ import com.evuazeze.restaurantreviews.exception.ReviewNotFoundException;
 import com.evuazeze.restaurantreviews.model.Review;
 import com.evuazeze.restaurantreviews.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,6 +20,14 @@ public class ReviewController {
 
     @Autowired
     private ReviewService reviewService;
+
+    @MessageMapping("/reviews")
+    @SendTo("/topic/review")
+    public Review review(Review review) {
+        System.out.println("review: " + review);
+        reviewService.saveReview(review);
+        return review;
+    }
 
     @PostMapping(value = "/reviews")
     @ResponseStatus(HttpStatus.OK)

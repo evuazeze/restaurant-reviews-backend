@@ -5,6 +5,7 @@ import com.evuazeze.restaurantreviews.service.RestaurantService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,14 @@ public class RestaurantController {
     @GetMapping("/restaurants")
     public Iterable<Restaurant> getRestaurants() {
         Iterable<Restaurant> list = restaurantService.findAll();
+
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:8887");
+//
+//        return ResponseEntity.ok()
+//                .headers(headers)
+//                .body(list);
+
         return list;
     }
 
