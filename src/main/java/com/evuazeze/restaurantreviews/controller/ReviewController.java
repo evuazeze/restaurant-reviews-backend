@@ -30,10 +30,10 @@ public class ReviewController {
     }
 
     @PostMapping(value = "/reviews")
-    @ResponseStatus(HttpStatus.OK)
-    public void createReview(@RequestBody Review review) {
-        System.out.println(review);
+    public ResponseEntity<Review> createReview(@RequestBody Review review) {
         reviewService.saveReview(review);
+        return ResponseEntity.ok()
+                .body(review);
     }
 
     @GetMapping("/reviews")

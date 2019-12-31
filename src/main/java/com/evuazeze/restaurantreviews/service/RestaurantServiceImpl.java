@@ -16,7 +16,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public List<Restaurant> findAll() {
-        return restaurantRepository.findAll();
+        return restaurantRepository.findAllByOrderByIdAsc();
     }
 
     @Override
